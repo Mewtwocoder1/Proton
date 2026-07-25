@@ -1,0 +1,39 @@
+name: Build ARM64 Proton
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - proton-11.0-1   # Triggers automatically when pushed to this branch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Free Disk Space
+        run: |
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /usr/local/lib/android
+          sudo rm -rf /opt/ghc
+
+      - name: Set up Docker
+        uses: docker/setup-buildx-action@v3
+
+      - name: Configure and Build Proton ARM64
+        run: |
+          mkdir build
+          cd build
+          ../configure.sh --target-arch=arm64
+          make redist
+
+      - name: Upload Proton Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Proton-11.0-1-LinUwUx-ARM64
+          path: build/dist/
+          
