@@ -8,13 +8,16 @@ on:
 
 jobs:
   build:
-    # Use GitHub's native ARM64 runner hardware
     runs-on: ubuntu-24.04-arm
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
         with:
           submodules: recursive
+          fetch-depth: 0 # Fetches full history & tags to prevent git describe errors
+
+      - name: Fetch all submodule tags
+        run: git submodule foreach --recursive 'git fetch --tags || true'
 
       - name: Free Disk Space
         run: |
