@@ -4,11 +4,12 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - proton-11.0-1   # Triggers automatically when pushed to this branch
+      - proton-11.0-1
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    # Use GitHub's native ARM64 runner hardware
+    runs-on: ubuntu-24.04-arm
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -20,9 +21,6 @@ jobs:
           sudo rm -rf /usr/share/dotnet
           sudo rm -rf /usr/local/lib/android
           sudo rm -rf /opt/ghc
-
-      - name: Set up Docker
-        uses: docker/setup-buildx-action@v3
 
       - name: Configure and Build Proton ARM64
         run: |
@@ -36,4 +34,3 @@ jobs:
         with:
           name: Proton-11.0-1-LinUwUx-ARM64
           path: build/dist/
-          
